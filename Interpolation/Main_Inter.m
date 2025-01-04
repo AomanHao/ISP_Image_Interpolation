@@ -10,7 +10,7 @@ close all
 clc
 addpath('./methods');
 %% load data
-I=imread('.\data\kodim19.png');
+I=double(imread('.\data\kodim19.png'));
 
 %% pre para
 d = 2; % downscaling factor
