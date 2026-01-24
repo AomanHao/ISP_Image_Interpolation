@@ -14,7 +14,7 @@ I=double(imread('.\data\kodim19.png'));
 
 %% pre para
 d = 2; % downscaling factor
-method_hub = {'2newton','bicubic'};%,'bicubic'
+method_hub = {'winscale','bicubic'};%,'bicubic'
 
 for i_me = 1:numel(method_hub)
     scaler_type =  method_hub{i_me};
@@ -40,13 +40,12 @@ for i_me = 1:numel(method_hub)
             case 'bicubic'
                 result(:,:,ch) = imresize(img,d,'bicubic');
                 
-            case 'dpid'
-                Lambda = 2;  % tuning parameter
-                result(:,:,ch) = dpid(img, col_out, row_out, Lambda);
                 
             case 'inedi'
                 result(:,:,ch)=inedi(img,d);
                 
+            case 'winscale'
+                result(:,:,ch) = winscale(img,d, 0);
                 
         end
     end
