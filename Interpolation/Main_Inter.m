@@ -14,7 +14,7 @@ I=double(imread('.\data\kodim19.png'));
 
 %% pre para
 d = 2; % downscaling factor
-method_hub = {'winscale','bicubic'};%,'bicubic'
+method_hub = {'fast_upsample','bicubic'};%,'bicubic'
 
 for i_me = 1:numel(method_hub)
     scaler_type =  method_hub{i_me};
@@ -40,18 +40,26 @@ for i_me = 1:numel(method_hub)
             case 'bicubic'
                 result(:,:,ch) = imresize(img,d,'bicubic');
                 
+            case 'dpid'
+                Lambda = 2;  % tuning parameter
+                result(:,:,ch) = dpid(img, col_out, row_out, Lambda);
                 
             case 'inedi'
                 result(:,:,ch)=inedi(img,d);
                 
-            case 'winscale'
-                result(:,:,ch) = winscale(img,d, 0);
+            case 'fast_upsample'
+                % paper <Fast Image/Video Upsampling>
+                iter = 3;            % 迭代5次，足够收敛 5
+                lambda = 0.25;       % 修正系数
+                sigma = 1.2;         % 高斯PSF标准差 1.2
+                result(:,:,ch) = fun_fast_upsample_spatial(img, d, iter, lambda, sigma);
+                result(:,:,ch) = result(:,:,ch).*255;
                 
         end
     end
     toc;
     t=toc;
     %% save result%%%%%%%%%%%%%%
-    imwrite(uint8(result),strcat('.\result\',scaler_type,'.png'));
+    imwrite(uint8(result),strcat(scaler_type,'_out.png'));
 end
 
